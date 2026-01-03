@@ -1,0 +1,51 @@
+package templates
+
+import "github.com/nelsonmarro/go-stripe/templates/components/label"
+import "github.com/nelsonmarro/go-stripe/templates/components/input"
+
+templ headSection(contents templ.Component) {
+	<head>
+		<meta charset="UTF-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<link rel="stylesheet" href="https://rsms.me/inter/inter.css"/>
+		<link rel="stylesheet" href="/static/css/output.css"/>
+		@contents
+	</head>
+}
+
+templ scriptsSection(scripts ...string) {
+	<script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.7/bundles/datastar.js"></script>
+	<script type="module" src="/static/js/validators.js" defer></script>
+	for _, scriptPath := range scripts {
+		<script type="module" src={ scriptPath } defer></script>
+	}
+	@label.Script()
+	@input.Script()
+}
+
+templ MainLayout(headContent templ.Component, scripts ...string) {
+	<!DOCTYPE html>
+	<html lang="en">
+		@headSection(headContent)
+		<body>
+			<header class="">
+				<div class="py-5 bg-gray-800 text-white">
+					<p class="text-3xl text-center">Virtual Terminal</p>
+				</div>
+			</header>
+			<main>
+				<div id="content" class="max-w-4xl mx-auto my-10 px-5">
+					{ children... }
+				</div>
+			</main>
+			<!-- <footer class="py-5 bg-gray-800 text-white"> -->
+			<!-- 	<div class="grid grid-cols-3"> -->
+			<!-- 		<div class="text-center">Contact</div> -->
+			<!-- 		<div class="text-center">Privacy</div> -->
+			<!-- 		<div class="text-center">About Us</div> -->
+			<!-- 	</div> -->
+			<!-- </footer> -->
+			@scriptsSection(scripts...)
+		</body>
+	</html>
+}

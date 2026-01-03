@@ -1,0 +1,7 @@
+{
+  "componentsDir": "templates/components",
+  "utilsDir": "utils",
+  "moduleName": "github.com/nelsonmarro/go-stripe",
+  "jsDir": "assets/js",
+  "jsPublicPath": "static/js"
+}

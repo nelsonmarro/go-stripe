@@ -1,0 +1,159 @@
+package virtualterminal
+
+import "github.com/nelsonmarro/go-stripe/templates/components/form"
+import "github.com/nelsonmarro/go-stripe/templates/components/input"
+import "github.com/nelsonmarro/go-stripe/templates/components/button"
+import "github.com/nelsonmarro/go-stripe/templates/components/icon"
+import "github.com/nelsonmarro/go-stripe/internal/web/models"
+
+templ PaymentForm() {
+	{{ state := map[string]any{"state": models.VTState{}} }}
+	<div id="payment-view">
+		<div
+			class="text-center text-red-700 bg-red-100 border border-red-400 px-4 py-3 rounded relative hidden"
+			id="card-messages"
+			role="alert"
+		></div>
+		<form
+			id="payment-form"
+			name="charge_form"
+			data-signals={ templ.JSONString(state) }
+			data-on:submit__prevent="
+        $state.form_submitted = true;
+        $state.errors = window.validatePaymentForm($state.form);
+        if (Object.values($state.errors).every(e => e === '')) { @post('/payment-intent'); };"
+			data-effect="if ($state.payment_intent_success) { window.processPayment($state); };"
+			data-on:payment-success="@post('/payment-succeeded')"
+			data-on:input="if ($state.form_submitted) { $state.errors = window.validatePaymentForm($state.form) }"
+			autocomplete="off"
+			novalidate
+		>
+			@form.Item() {
+				@form.Label(form.LabelProps{
+					For: "input-amount",
+				}) {
+					Amount
+				}
+				@input.Input(input.Props{
+					ID:          "input-amount",
+					Name:        "input-amount",
+					Type:        input.TypeNumber,
+					Placeholder: "0.00",
+					Attributes: templ.Attributes{
+						"autocomplete": "amount-new",
+						"data-bind":    "state.form.amount",
+						"data-class":   "{'border-red-500': $state.errors.amount != '', 'border-gray-300': $state.errors.amount == ''}",
+					},
+				})
+				@form.Description() {
+					Enter the transaction's amount.
+				}
+				@form.Message(form.MessageProps{
+					ID:      "input-amount-error",
+					Variant: form.MessageVariantError,
+				}) {
+					<span data-show="$state.errors.amount != ''" data-text="$state.errors.amount"></span>
+				}
+			}
+			@form.Item() {
+				@form.Label(form.LabelProps{
+					For: "cardholder-name",
+				}) {
+					Holder Name
+				}
+				@input.Input(input.Props{
+					ID:          "cardholder-name",
+					Name:        "cardholder-name",
+					Type:        input.TypeText,
+					Placeholder: "Jhon Doe",
+					Attributes: templ.Attributes{
+						"autocomplete": "",
+						"data-bind":    "state.form.cardHolder",
+						"data-class":   "{'border-red-500': $state.errors.cardHolder != '', 'border-gray-300': $state.errors.cardHolder == ''}",
+					},
+				})
+				@form.Description() {
+					Enter card's holder name.
+				}
+				@form.Message(form.MessageProps{
+					ID:      "cardholder-name-error",
+					Variant: form.MessageVariantError,
+				}) {
+					<span data-show="$state.errors.cardHolder != ''" data-text="$state.errors.cardHolder"></span>
+				}
+			}
+			@form.Item() {
+				@form.Label(form.LabelProps{
+					For: "input-email",
+				}) {
+					Email
+				}
+				@input.Input(input.Props{
+					ID:          "input-email",
+					Name:        "input-email",
+					Type:        input.TypeEmail,
+					Placeholder: "jhondoe@email.com",
+					Attributes: templ.Attributes{
+						"autocomplete": "email-new",
+						"data-bind":    "state.form.email",
+						"data-class":   "{'border-red-500': $state.errors.email != '', 'border-gray-300': $state.errors.email == ''}",
+					},
+				})
+				@form.Description() {
+					Enter your email address for notifications.
+				}
+				@form.Message(form.MessageProps{
+					ID:      "input-email-error",
+					Variant: form.MessageVariantError,
+				}) {
+					<span data-show="$state.errors.email != ''" data-text="$state.errors.email"></span>
+				}
+			}
+			<!-- card number will be built by stripe -->
+			@form.Item(form.ItemProps{}) {
+				@form.Label(form.LabelProps{
+					For: "card-element",
+				}) {
+					Credit Card
+				}
+				<div
+					id="card-element"
+					class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+				></div>
+				<div
+					class="text-center text-red-700 bg-red-100 border border-red-400 px-4 py-3 rounded relative hidden"
+					id="card-errors"
+					role="alert"
+				></div>
+				<div
+					class="text-center text-green-700 bg-green-100 border border-green-400 px-4 py-3 rounded relative hidden"
+					id="card-success"
+					role="alert"
+				></div>
+			}
+			<hr/>
+			@button.Button(button.Props{
+				ID:    "pay-btn",
+				Class: "mt-2 block",
+				Type:  "submit",
+				Attributes: templ.Attributes{
+					"data-show": "$state.is_processing === false",
+				},
+			}) {
+				Charge Card
+			}
+			@button.Button(button.Props{
+				Disabled: true,
+				Class:    "flex items-center gap-2",
+				Attributes: templ.Attributes{
+					"data-show": "$state.is_processing === true",
+				},
+			}) {
+				@icon.LoaderCircle(icon.Props{
+					Class: "animate-spin",
+				})
+				Please wait
+			}
+		</form>
+	</div>
+}

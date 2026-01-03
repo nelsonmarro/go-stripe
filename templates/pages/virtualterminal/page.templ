@@ -1,0 +1,16 @@
+package virtualterminal
+
+import "github.com/nelsonmarro/go-stripe/templates"
+
+templ head(stripeKey string) {
+	<title>Virtual Terminal</title>
+	<meta name="stripe-key" content={ stripeKey }/>
+}
+
+templ VirtualTerminalPage(stripeKey string) {
+	@templates.MainLayout(head(stripeKey), "/static/js/virtual-terminal.js") {
+		<div id="payment-view">
+			@PaymentForm()
+		</div>
+	}
+}

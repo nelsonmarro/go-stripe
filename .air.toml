@@ -1,0 +1,42 @@
+
+# .air.toml
+root = "."
+tmp_dir = "tmp"
+
+[build]
+  # We are building the web application
+  cmd = "templ generate && go build -o ./tmp/web-app ./cmd/web/main.go"
+  bin = "./tmp/web-app"
+
+  # Watch for changes in these directories
+  include_dir = ["cmd/web", "internal", "config", "templates"]
+  include_ext = ["go", "tpl", "tmpl", "html", "templ"]
+
+  # Exclude these directories and files
+  exclude_dir = ["assets", "tmp", "vendor", "testdata", "node_modules", "cmd/api"]
+  exclude_regex = ["_test.go", ".*_templ.go"]
+
+  # Other build settings from your example
+  delay = 1000
+  stop_on_error = false
+  log = "build-errors.log"
+  kill_delay = "0s"
+
+[color]
+  app = ""
+  build = "yellow"
+  main = "magenta"
+  runner = "green"
+  watcher = "cyan"
+
+[misc]
+clean_on_exit = false
+
+[proxy]
+enabled = true
+proxy_port = 7331
+app_port = 4000
+
+[screen]
+clear_on_rebuild = false
+keep_scroll = true
