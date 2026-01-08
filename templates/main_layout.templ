@@ -6,6 +6,7 @@ import "github.com/nelsonmarro/go-stripe/templates/components/sidebar"
 import "github.com/nelsonmarro/go-stripe/templates/components/icon"
 import "github.com/nelsonmarro/go-stripe/templates/components/dialog"
 import "github.com/nelsonmarro/go-stripe/templates/components/popover"
+import "github.com/nelsonmarro/go-stripe/utils"
 
 templ headSection(contents templ.Component) {
 	<head>
@@ -31,12 +32,20 @@ templ scriptsSection(scripts ...string) {
 }
 
 templ MainLayout(headContent templ.Component, scripts ...string) {
+	{{
+		collapsed := false
+		if val := ctx.Value(utils.SidebarCollapsedKey); val != nil {
+			if b, ok := val.(bool); ok {
+				collapsed = b
+			}
+		}
+	}}
 	<!DOCTYPE html>
 	<html lang="en">
 		@headSection(headContent)
 		<body>
 			@sidebar.Layout(sidebar.LayoutProps{Class: "h-screen"}) {
-				@sidebar.Sidebar(sidebar.Props{}) {
+				@sidebar.Sidebar(sidebar.Props{Collapsed: collapsed}) {
 					@sidebar.Header() {
 						<div class="flex items-center gap-2 px-2 py-1.5 font-bold text-lg">
 							<span>Go Stripe</span>
@@ -63,7 +72,6 @@ templ MainLayout(headContent templ.Component, scripts ...string) {
 						}
 					}
 					@sidebar.Footer() {
-						
 					}
 				}
 				@sidebar.Inset() {

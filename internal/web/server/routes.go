@@ -5,11 +5,15 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/nelsonmarro/go-stripe/internal/web/handlers"
+	"github.com/nelsonmarro/go-stripe/internal/web/middleware"
 	"github.com/nelsonmarro/go-stripe/internal/web/services"
 )
 
 func (s *Server) getRoutes() http.Handler {
 	mux := chi.NewRouter()
+	
+	// Middleware
+	mux.Use(middleware.SidebarStateMiddleware)
 
 	// Static files
 	fs := http.FileServer(http.Dir("./static"))
