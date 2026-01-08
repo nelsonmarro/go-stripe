@@ -1,3 +1,4 @@
+// Package driver implements the database driver connection
 package driver
 
 import (

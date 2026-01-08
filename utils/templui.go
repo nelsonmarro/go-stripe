@@ -1,4 +1,4 @@
-// templui util templui.go - version: v0.97.0 installed by templui v0.97.0
+// templui util templui.go - version: v1.1.0 installed by templui v1.1.0
 package utils
 
 import (
@@ -9,6 +9,8 @@ import (
 
 	twmerge "github.com/Oudwins/tailwind-merge-go"
 )
+
+const ScriptVersion = "v1.1.0"
 
 // TwMerge combines Tailwind classes and resolves conflicts.
 // Example: "bg-red-500 hover:bg-blue-500", "bg-green-500" → "hover:bg-blue-500 bg-green-500"

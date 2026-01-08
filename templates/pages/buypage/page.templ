@@ -1,0 +1,16 @@
+package buypage
+
+import "github.com/nelsonmarro/go-stripe/templates"
+
+templ head(stripeKey string) {
+	<title>Buy Page</title>
+	<meta name="stripe-key" content={ stripeKey }/>
+}
+
+templ BuyPage(stripeKey string) {
+	@templates.MainLayout(head(stripeKey)) {
+		<h2 class="mt-3 text-center">Buy One Widget</h2>
+		<hr/>
+		@BuyPageContent()
+	}
+}

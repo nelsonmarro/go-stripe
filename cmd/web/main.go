@@ -2,6 +2,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -20,6 +21,8 @@ func main() {
 	if err != nil {
 		errorLog.Fatal(err)
 	}
+	fmt.Println("Database connection established!")
+
 	defer func() {
 		err := conn.Close()
 		if err != nil {

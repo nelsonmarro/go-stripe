@@ -9,8 +9,6 @@ templ head(stripeKey string) {
 
 templ VirtualTerminalPage(stripeKey string) {
 	@templates.MainLayout(head(stripeKey), "/static/js/virtual-terminal.js") {
-		<div id="payment-view">
-			@PaymentForm()
-		</div>
+		@PaymentForm()
 	}
 }
