@@ -2,6 +2,7 @@
 package server
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
@@ -14,13 +15,15 @@ type Server struct {
 	Config   *config.Config
 	InfoLog  *log.Logger
 	ErrorLog *log.Logger
+	DB       *sql.DB
 }
 
-func NewServer(cfg *config.Config, infoLog, errorLog *log.Logger) *Server {
+func NewServer(cfg *config.Config, infoLog, errorLog *log.Logger, db *sql.DB) *Server {
 	return &Server{
 		Config:   cfg,
 		InfoLog:  infoLog,
 		ErrorLog: errorLog,
+		DB:       db,
 	}
 }
 

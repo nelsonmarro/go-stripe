@@ -39,6 +39,7 @@ func LoadConfigOnce() *Config {
 
 		instance.Stripe.Key = os.Getenv("STRIPE_KEY")
 		instance.Stripe.Secret = os.Getenv("STRIPE_SECRET")
+		instance.DB.DSN = os.Getenv("DSN")
 	})
 
 	return instance
