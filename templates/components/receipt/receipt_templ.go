@@ -121,8 +121,10 @@ func Receipt(vm *VM) templ.Component {
 		})
 		templ_7745c5c3_Err = button.Button(button.Props{
 			Class: "mt-2",
-			Type:  "submit",
-			Href:  "/virtual-terminal",
+			Type:  "button",
+			Attributes: templ.Attributes{
+				"data-on:click": "@get('/virtual-terminal/form')",
+			},
 		}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var7), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err

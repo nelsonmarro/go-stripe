@@ -7,8 +7,10 @@ import (
 
 	"github.com/nelsonmarro/go-stripe/config"
 	"github.com/nelsonmarro/go-stripe/internal/web/models"
+	"github.com/nelsonmarro/go-stripe/internal/web/render"
 	"github.com/nelsonmarro/go-stripe/templates/components/receipt"
-	"github.com/nelsonmarro/go-stripe/templates/pages/virtualterminal"
+	"github.com/nelsonmarro/go-stripe/templates/layout"
+	"github.com/nelsonmarro/go-stripe/templates/views/virtual_terminal"
 	"github.com/starfederation/datastar-go/datastar"
 )
 
@@ -28,8 +30,24 @@ func NewVirtualTerminalHandler(
 }
 
 func (h *VirtualTerminalHandler) GetVirtualTerminal(w http.ResponseWriter, r *http.Request) {
-	vTermPage := virtualterminal.VirtualTerminalPage(h.config.Stripe.Key)
+	if r.Header.Get("Datastar-Request") == "true" {
+		err := render.PatchSPA(w, r, "Virtual Terminal", virtual_terminal.Content())
+		if err != nil {
+			h.errorLogger.Println(err)
+		}
+		return
+	}
+
+	vTermPage := virtual_terminal.Entry(h.config.Stripe.Key)
 	err := vTermPage.Render(r.Context(), w)
+	if err != nil {
+		h.errorLogger.Println(err)
+	}
+}
+
+func (h *VirtualTerminalHandler) GetPaymentForm(w http.ResponseWriter, r *http.Request) {
+	sse := datastar.NewSSE(w, r)
+	err := sse.PatchElementTempl(layout.ContentWrapper(virtual_terminal.Content()), datastar.WithSelector("#content"))
 	if err != nil {
 		h.errorLogger.Println(err)
 	}

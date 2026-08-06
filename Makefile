@@ -19,6 +19,8 @@ run:
 	@air
 
 build:
+	@echo "Building frontend assets..."
+	@npm run build
 	@echo "Generating templ files and compiling Go application..."
 	@templ generate
 	@go build -o ./tmp/web-app ./cmd/web/main.go

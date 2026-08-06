@@ -2,11 +2,14 @@
 package handlers
 
 import (
+	"context"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"strconv"
 
+	"github.com/a-h/templ"
 	"github.com/nelsonmarro/go-stripe/config"
 	"github.com/nelsonmarro/go-stripe/internal/web/models"
 	"github.com/nelsonmarro/go-stripe/internal/web/services"
@@ -29,6 +32,13 @@ func NewStripeHandler(
 		config:      config,
 		cardService: cardService,
 	}
+}
+
+func ErrorMessage(msg string) templ.Component {
+	return templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
+		_, err := io.WriteString(w, fmt.Sprintf(`<div id="card-messages" class="text-center text-red-700 bg-red-100 border border-red-400 px-4 py-3 rounded relative" role="alert">%s</div>`, msg))
+		return err
+	})
 }
 
 func (sh *StripeHandler) GetPaymentIntent(w http.ResponseWriter, r *http.Request) {
@@ -73,9 +83,21 @@ func (sh *StripeHandler) GetPaymentIntent(w http.ResponseWriter, r *http.Request
 
 	// 5. Send events back to the client based on the outcome
 	if err != nil {
+		sh.errorLogger.Println("Stripe Charge error:", err)
 		vtState.PaymentIntent = nil
 		vtState.PaymentIntentSuccess = false
 		vtState.IsProcessing = false
+
+		// Patch the error message to the UI
+		errMessage := "Error processing payment. Please check your card details or try again."
+		if sh.config.Env != "production" {
+			errMessage = fmt.Sprintf("Stripe Error: %v", err)
+		}
+
+		_ = sse.PatchElementTempl(
+			ErrorMessage(errMessage),
+			datastar.WithSelector("#card-messages"),
+		)
 	} else {
 		// On success: send the payment intent to the client to proceed with confirmation
 		vtState.PaymentIntent = pi

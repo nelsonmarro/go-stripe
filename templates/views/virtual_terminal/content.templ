@@ -1,4 +1,4 @@
-package virtualterminal
+package virtual_terminal
 
 import "github.com/nelsonmarro/go-stripe/templates/components/form"
 import "github.com/nelsonmarro/go-stripe/templates/components/input"
@@ -6,7 +6,7 @@ import "github.com/nelsonmarro/go-stripe/templates/components/button"
 import "github.com/nelsonmarro/go-stripe/templates/components/icon"
 import "github.com/nelsonmarro/go-stripe/internal/web/models"
 
-templ PaymentForm() {
+templ Content() {
 	{{ state := map[string]any{"state": models.VTState{}} }}
 	<div id="payment-view">
 		<div
@@ -18,6 +18,7 @@ templ PaymentForm() {
 			id="payment-form"
 			name="charge_form"
 			data-signals={ templ.JSONString(state) }
+			data-init="window.initStripeCard()"
 			data-on:submit__prevent="
         $state.form_submitted = true;
         $state.errors = window.validatePaymentForm($state.form);

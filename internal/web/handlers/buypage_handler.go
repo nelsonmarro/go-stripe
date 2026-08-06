@@ -5,8 +5,9 @@ import (
 	"net/http"
 
 	"github.com/nelsonmarro/go-stripe/config"
+	"github.com/nelsonmarro/go-stripe/internal/web/render"
 	"github.com/nelsonmarro/go-stripe/internal/web/services"
-	"github.com/nelsonmarro/go-stripe/templates/pages/buypage"
+	"github.com/nelsonmarro/go-stripe/templates/views/buy_page"
 )
 
 type BuyPageHandler struct {
@@ -28,7 +29,15 @@ func NewBuyPageHandler(
 }
 
 func (h *BuyPageHandler) GetPage(w http.ResponseWriter, r *http.Request) {
-	buyPage := buypage.BuyPage(h.config.Stripe.Key)
+	if r.Header.Get("Datastar-Request") == "true" {
+		err := render.PatchSPA(w, r, "Buy Page", buy_page.Content())
+		if err != nil {
+			h.errorLogger.Println(err)
+		}
+		return
+	}
+
+	buyPage := buy_page.Entry(h.config.Stripe.Key)
 	err := buyPage.Render(r.Context(), w)
 	if err != nil {
 		h.errorLogger.Println(err)

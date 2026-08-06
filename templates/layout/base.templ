@@ -1,0 +1,47 @@
+package layout
+
+import "github.com/nelsonmarro/go-stripe/templates/components/label"
+import "github.com/nelsonmarro/go-stripe/templates/components/input"
+import "github.com/nelsonmarro/go-stripe/templates/components/sidebar"
+import "github.com/nelsonmarro/go-stripe/templates/components/dialog"
+import "github.com/nelsonmarro/go-stripe/templates/components/popover"
+import "github.com/nelsonmarro/go-stripe/templates/components/collapsible"
+import "github.com/nelsonmarro/go-stripe/templates/components/dropdown"
+import "github.com/nelsonmarro/go-stripe/templates/components/avatar"
+
+templ Head(contents templ.Component) {
+	<head>
+		<meta charset="UTF-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<link rel="stylesheet" href="https://rsms.me/inter/inter.css"/>
+		<link rel="stylesheet" href="/static/css/output.css"/>
+		@contents
+	</head>
+}
+
+templ Scripts(scripts ...string) {
+	<script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.7/bundles/datastar.js"></script>
+	<script type="module" src="/static/js/validators.js" defer></script>
+	for _, scriptPath := range scripts {
+		<script type="module" src={ scriptPath } defer></script>
+	}
+	@label.Script()
+	@input.Script()
+	@sidebar.Script()
+	@dialog.Script()
+	@popover.Script()
+	@collapsible.Script()
+	@dropdown.Script()
+	@avatar.Script()
+}
+
+templ Base(headContent templ.Component, scripts ...string) {
+	<!DOCTYPE html>
+	<html lang="en">
+		@Head(headContent)
+		<body>
+			{ children... }
+			@Scripts(scripts...)
+		</body>
+	</html>
+}

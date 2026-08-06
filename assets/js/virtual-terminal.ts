@@ -148,7 +148,6 @@ window.initStripeCard = async () => {
   const style: StripeElementStyle = {
     base: {
       fontSize: "16px",
-      lineHeight: "24px",
     },
   };
 

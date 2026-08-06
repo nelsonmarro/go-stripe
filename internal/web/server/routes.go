@@ -25,6 +25,7 @@ func (s *Server) getRoutes() http.Handler {
 
 	// UI Routes
 	mux.Get("/virtual-terminal", vTermHandler.GetVirtualTerminal)
+	mux.Get("/virtual-terminal/form", vTermHandler.GetPaymentForm)
 	mux.Get("/buy-page", cardPageHandler.GetPage)
 
 	// Backend Routes

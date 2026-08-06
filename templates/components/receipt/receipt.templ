@@ -35,8 +35,10 @@ templ Receipt(vm *VM) {
 		<div class="text-center">
 			@button.Button(button.Props{
 				Class: "mt-2",
-				Type:  "submit",
-				Href:  "/virtual-terminal",
+				Type:  "button",
+				Attributes: templ.Attributes{
+					"data-on:click": "@get('/virtual-terminal/form')",
+				},
 			}) {
 				Process Next Payment
 			}

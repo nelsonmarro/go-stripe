@@ -1,0 +1,16 @@
+package buy_page
+
+import "github.com/nelsonmarro/go-stripe/templates/layout"
+
+templ head(stripeKey string) {
+	<title>Buy Page</title>
+	<meta name="stripe-key" content={ stripeKey }/>
+}
+
+templ Entry(stripeKey string) {
+	@layout.Base(head(stripeKey), "/static/js/virtual-terminal.js") {
+		@layout.Shell("Buy Page") {
+			@Content()
+		}
+	}
+}

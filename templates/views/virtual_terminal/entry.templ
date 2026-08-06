@@ -1,0 +1,16 @@
+package virtual_terminal
+
+import "github.com/nelsonmarro/go-stripe/templates/layout"
+
+templ head(stripeKey string) {
+	<title>Virtual Terminal</title>
+	<meta name="stripe-key" content={ stripeKey }/>
+}
+
+templ Entry(stripeKey string) {
+	@layout.Base(head(stripeKey), "/static/js/virtual-terminal.js") {
+		@layout.Shell("Virtual Terminal") {
+			@Content()
+		}
+	}
+}
